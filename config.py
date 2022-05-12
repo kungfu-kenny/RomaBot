@@ -11,6 +11,7 @@ class Folders:
     folder_storage = 'storage'
     folder_update = 'update'
     folder_merged = 'merged'
+    folder_temp = 'temporary'
     folder_storage_full = os.path.join(
         folder_current,
         folder_storage
@@ -23,9 +24,15 @@ class Folders:
         folder_storage_full,
         folder_merged
     )
+    folder_temp_full = os.path.join(
+        folder_storage_full,
+        folder_temp
+    )
 
 @dataclass
 class Support:
+    name = 'support'
+    link = 'manually'
     file_json_empty = 'json_update.json'
     file_json_containment = 'containment'
     file_json_full = os.path.join(
@@ -35,4 +42,18 @@ class Support:
 
 @dataclass
 class Citaty:
+    name = 'citaty'
     link = 'https://ru.citaty.net/tsitaty-o-volkakh/'
+
+@dataclass
+class AnekdotyStupid:
+    #page/2/
+    increment = 'page'
+    name = 'anekdoty_stupid'
+    link = 'https://anekdoty.ru/tupo-no-smeshno/'
+    
+@dataclass
+class AnekdotyJews:
+    increment = 'page'
+    name = 'anekdoty_jews'
+    link = 'https://anekdoty.ru/pro-evreev/'

@@ -1,7 +1,9 @@
 import requests
 import pandas as pd
-from pprint import pprint
-from utilities.work_files import check_folders
+from utilities.work_files import (
+    check_folders, 
+    create_json_empty
+)
 
 
 class ParseMain:
@@ -10,6 +12,8 @@ class ParseMain:
     """
     def __init__(self) -> None:
         check_folders()
+        #TODO check for possible removal
+        create_json_empty()
 
     @staticmethod
     def get_html_values(url:str) -> str:
@@ -28,16 +32,51 @@ class ParseMain:
                 df_path = string value for the full path
         Output: we created new dataframe
         """
-        df.to_csv(df_path)
+        df.to_csv(df_path, index=False)
 
     @staticmethod
-    def develop_csv_name() -> str:
+    def develop_csv_name(merged:bool, name:str) -> str:
         """
         Static method which is dedicated to create csv name in that cases
-        Input:  
+        Input:  merged = boolean value which signify the check of the merged value
+                name = string value of the name
         Output: string which was previously developed in that cases
         """
-        pass
+        return f"merged_{name}.csv" if merged else f"{name}.csv"
+
+    @staticmethod
+    def develop_df(name:str='', link:str='', value_list:list=[]) -> pd.DataFrame:
+        """
+        Static method which is dedicated to develop basic dataframe for all of it
+        Input:  name = name of the selected string
+                link = string link value
+                value_list = list of parsed strings
+        Output: pandas dataframe of the 
+        """
+        return pd.DataFrame(
+            {
+                "Source": [name for _ in value_list],
+                "String": value_list,
+                "Link": [link for _ in value_list],
+            }
+        )
+
+    @staticmethod
+    def develop_df_merged(df_path:str, df_new:pd.DataFrame) -> pd.DataFrame:
+        """
+        Static method which is dedicated to develop merged
+        Input:  df_path = path to the previous dataframe
+                df_new = previously calculated dataframe values
+        Output: required pandas dataframe
+        """
+        df_new = pd.concat(
+            [
+                pd.read_csv(df_path),
+                df_new
+            ]
+        )
+        df_new.drop_duplicates(inplace=True)
+        return df_new
 
     def develop_parse_main(self) -> None:
         """

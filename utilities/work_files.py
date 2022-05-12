@@ -39,7 +39,8 @@ def check_folders() -> None:
     for f in [
         Folders.folder_storage_full,
         Folders.folder_merged_full,
-        Folders.folder_update_full
+        Folders.folder_update_full,
+        Folders.folder_temp_full,
     ]:
         check_folder(f)
 
