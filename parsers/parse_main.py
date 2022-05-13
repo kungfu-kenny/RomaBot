@@ -1,9 +1,11 @@
+import os
 import requests
 import pandas as pd
 from utilities.work_files import (
-    check_folders, 
-    create_json_empty
+    check_folders,
+    check_presence_file
 )
+from config import Folders
 
 
 class ParseMain:
@@ -60,7 +62,7 @@ class ParseMain:
                 name = string value of the name
         Output: string which was previously developed in that cases
         """
-        return f"merged_{name}.csv" if merged else f"{name}.csv"
+        return f"merged.csv" if merged else f"{name}.csv"
 
     @staticmethod
     def develop_df(name:str='', link:str='', value_list:list=[]) -> pd.DataFrame:
@@ -95,6 +97,36 @@ class ParseMain:
         )
         df_new.drop_duplicates(inplace=True)
         return df_new
+
+    def develop_df_all(self) -> pd.DataFrame:
+        """
+        Method which is dedicated to created all possible
+        Input:  None
+        Output: merged dataframe to all of it
+        """
+        df = pd.concat(
+            [
+                pd.read_csv(
+                    os.path.join(Folders.folder_temp_full, f)
+                )
+                for f in os.listdir(Folders.folder_temp_full)
+                if os.path.splitext(f)[1].lower() == '.csv'
+            ]
+        )
+        df.drop_duplicates(
+            subset=['String'], 
+            inplace=True
+        )
+        df_path = os.path.join(
+            Folders.folder_merged_full, 
+            self.develop_csv_name(1, '')
+        )
+        if check_presence_file(df_path):
+            df = self.develop_df_merged(
+                df_path, 
+                df
+            )
+        self.develop_csv(df, df_path)
 
     def develop_parse_main(self, previous_check:bool=False) -> None:
         """

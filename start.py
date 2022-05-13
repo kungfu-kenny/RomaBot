@@ -11,6 +11,7 @@ try:
         ParseAnekdoty
     ]:
         cls().develop_parse_main(value_noncheck)
+    cls().develop_df_all()
 
 except Exception as e:
     print(e)
