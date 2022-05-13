@@ -5,6 +5,8 @@ from dataclasses import dataclass
 
 load_dotenv()
 
+value_noncheck = os.getenv("NONCHECK", False)
+
 @dataclass
 class Folders:
     folder_current = os.getcwd()
@@ -47,11 +49,22 @@ class Citaty:
 
 @dataclass
 class AnekdotyStupid:
-    #page/2/
     increment = 'page'
     name = 'anekdoty_stupid'
     link = 'https://anekdoty.ru/tupo-no-smeshno/'
     
+@dataclass
+class AnekdotyVeryStupid:
+    increment = 'page'
+    name = 'anekdoty_very_stupid'
+    link = 'https://anekdoty.ru/pro-glupost/'
+
+@dataclass
+class AnekdotyGay:
+    increment = 'page'
+    name = 'anekdoty_gay'
+    link = 'https://anekdoty.ru/pro-geev/'
+
 @dataclass
 class AnekdotyJews:
     increment = 'page'

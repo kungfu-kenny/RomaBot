@@ -12,8 +12,15 @@ class ParseMain:
     """
     def __init__(self) -> None:
         check_folders()
-        #TODO check for possible removal
-        create_json_empty()
+
+    @staticmethod
+    def get_link_values() -> str:
+        """
+        Static method which is dedicated to develop the link values
+        Input:  None
+        Output: string value of requested link
+        """
+        pass
 
     @staticmethod
     def get_html_values(url:str) -> str:
@@ -23,6 +30,17 @@ class ParseMain:
         Output: text value which would be used as html
         """
         return requests.get(url).text
+
+    @staticmethod
+    def get_html_values_boolean(url:str) -> set:
+        """
+        Static method which is dedicated to get the boolean values plus the html
+        Input:  url = url of the selected values
+        Output: boolean value of the okay data
+        """
+        value_used = requests.get(url)
+        value_bool = True if 199 < value_used.status_code < 300 else False
+        return value_bool, value_used.text if value_bool else ''
 
     @staticmethod
     def develop_csv(df:pd.DataFrame, df_path:str) -> None:
@@ -57,7 +75,7 @@ class ParseMain:
             {
                 "Source": [name for _ in value_list],
                 "String": value_list,
-                "Link": [link for _ in value_list],
+                "Link": [link for _ in value_list] if isinstance(link, str) else link,
             }
         )
 
@@ -78,10 +96,10 @@ class ParseMain:
         df_new.drop_duplicates(inplace=True)
         return df_new
 
-    def develop_parse_main(self) -> None:
+    def develop_parse_main(self, previous_check:bool=False) -> None:
         """
         Method which is dedicated to produce main work on the parsing
-        Input:  None
+        Input:  previous_check = boolean value which signify the new value for it
         Output: we developed the csv value for the parsing
         """
         pass

@@ -19,12 +19,14 @@ class ParseManually(ParseMain):
             self.develop_csv_name(False, Support.name)
         )
     
-    def develop_parse_main(self) -> None:
+    def develop_parse_main(self, previous_check:bool=False) -> None:
         """
         Method which is dedicated to create parsed dataframe
-        Input:  None
+        Input:  previous_check = boolean value which signify the new value for it
         Output: we developed the main parsed from the csv
         """
+        if previous_check and check_presence_file(self.df_path):
+            return
         df = self.develop_df( 
             Support.name,
             Support.link,
