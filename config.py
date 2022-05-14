@@ -32,6 +32,17 @@ class Folders:
     )
 
 @dataclass
+class DbCredentials:
+    host = os.getenv('DB_HOST', '')
+    name = os.getenv('DB_NAME', '')
+    database = os.getenv('DB_DATABASE', '')
+    password = os.getenv('DB_PASSWORD', '')
+    db_path = os.path.join(
+        Folders.folder_storage_full, 
+        'local.db'
+    )
+
+@dataclass
 class Support:
     name = 'support'
     link = 'manually'
