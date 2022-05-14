@@ -5,7 +5,11 @@ from dataclasses import dataclass
 
 load_dotenv()
 
-value_noncheck = os.getenv("NONCHECK", False)
+@dataclass
+class EnvVariables:
+    noncheck = os.getenv("NONCHECK", False)
+    postgesql = os.getenv("DB_POSTGRES", False)
+    create_db = os.getenv("DB_CREATE", False)
 
 @dataclass
 class Folders:
@@ -38,7 +42,7 @@ class DbCredentials:
     database = os.getenv('DB_DATABASE', '')
     password = os.getenv('DB_PASSWORD', '')
     db_path = os.path.join(
-        Folders.folder_storage_full, 
+        Folders.folder_merged_full, 
         'local.db'
     )
 

@@ -1,5 +1,3 @@
-import os
-# import sqlalchemy
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import (create_engine,
@@ -9,7 +7,6 @@ from sqlalchemy import (create_engine,
                         String,
                         ForeignKey,
                         PrimaryKeyConstraint)
-# from sqlalchemy.orm.session import Session
 from utilities.work_files import check_folder
 from config import Folders, DbCredentials
 
@@ -28,7 +25,7 @@ association_text_group = Table('text_group', Base.metadata,
     PrimaryKeyConstraint('id_text', 'id_group'),    
 )
 
-association_text_channel = Table('text_user', Base.metadata,
+association_text_channel = Table('text_channel', Base.metadata,
     Column('id_text', ForeignKey(f'texts.id')),
     Column('id_channel', ForeignKey(f'channels.id')),
     PrimaryKeyConstraint('id_text', 'id_channel'),    
@@ -37,19 +34,21 @@ association_text_channel = Table('text_user', Base.metadata,
 association_user_group = Table('user_group', Base.metadata,
     Column('id_user', ForeignKey(f'users.id')),
     Column('id_group', ForeignKey(f'groups.id')),
-    PrimaryKeyConstraint('id_text', 'id_group'),    
+    PrimaryKeyConstraint('id_user', 'id_group'),    
 )
 
 association_user_channel = Table('user_channel', Base.metadata,
     Column('id_user', ForeignKey(f'users.id')),
     Column('id_channel', ForeignKey(f'channels.id')),
-    PrimaryKeyConstraint('id_text', 'id_channel'),    
+    PrimaryKeyConstraint('id_user', 'id_channel'),    
 )
 
 class Text(Base):
     __tablename__ = 'texts'
     id = Column(Integer, primary_key=True)
     text = Column(String, nullable=False)
+    link = Column(String, default='')
+    source = Column(String, default='')
     text_user = relationship("User",
         secondary=association_text_user,
         back_populates="text_user")
@@ -94,7 +93,7 @@ class Channel(Base):
     text_channel = relationship("Text",
         secondary=association_text_channel,
         back_populates="text_channel")
-    user_channel = relationship("Channel",
+    user_channel = relationship("User",
         secondary=association_user_channel,
         back_populates="user_channel")
 
@@ -103,12 +102,13 @@ class DbCreate:
     class which is dedicated to create from the users necessary connections
     It would use the previous value to create connection
     """
-    def __init__(self, create_conn:bool=False) -> None:
+    def __init__(self, create_conn:bool=False, create_db:bool=False) -> None:
         self._host = DbCredentials.host
         self._name = DbCredentials.name
         self._database = DbCredentials.database
         self._password = DbCredentials.password
         self.engine = self.produce_engine(create_conn)
+        if create_db: self.create_db()
         self.session = self.produce_session()
         self.connection = self.create_connection()
 
@@ -159,5 +159,7 @@ class DbCreate:
         """
         Method which is dedicated to develop the 
         """
-        if self.connection:
-            self.connection.close()
+        if self.engine and self.connection:
+            self.session.close()
+            self.engine.dispose()
+            self.session.close()

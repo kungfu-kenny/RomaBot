@@ -127,6 +127,7 @@ class ParseMain:
                 df
             )
         self.develop_csv(df, df_path)
+        return df
 
     def develop_parse_main(self, previous_check:bool=False) -> None:
         """
