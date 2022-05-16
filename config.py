@@ -7,9 +7,20 @@ load_dotenv()
 
 @dataclass
 class EnvVariables:
+    token = os.getenv('TOKEN', '')
     noncheck = os.getenv("NONCHECK", False)
     postgesql = os.getenv("DB_POSTGRES", False)
     create_db = os.getenv("DB_CREATE", False)
+
+@dataclass
+class TelegramButtons:
+    settings = 'Settings'
+
+@dataclass
+class TelegramCommands:
+    start = 'start'
+    history = 'history'
+    settings = 'settings'
 
 @dataclass
 class Folders:
