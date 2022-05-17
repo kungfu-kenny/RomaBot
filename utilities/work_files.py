@@ -6,6 +6,9 @@ from config import (
 )
 
 
+def make_string(value_default:str) -> str:
+    return value_default if value_default else ''
+
 def check_presence_file(path_file:str) -> bool:
     """
     Function which is dedicated to check files

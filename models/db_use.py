@@ -1,3 +1,4 @@
+import random
 import pandas as pd
 from pprint import pprint
 from sqlalchemy import (
@@ -64,6 +65,32 @@ class DataUsage:
             )
             self.session.commit()
     
+    def return_random_joke(self, id_sent:int, id_type:int) -> set:
+        """
+        Method which is dedicated to return the random joke for the users
+        Input:  id_sent = id which was previously sent
+                id_type = id of the type which was previously used
+        Output: set with id and the string message
+        """
+        if id_type == 1:
+            print(1, id_sent)
+            value_used = []
+        elif id_type == 2:
+            print(2, id_sent)
+            value_used = []
+        elif id_type == 3:
+            print(3, id_sent)
+            value_used = []
+        #TODO add here the check
+        #TODO add here insertion after
+        length = self.session.query(Text.id).count()
+        print(length)
+        id_new = random.choice(
+            [f.id for f in self.session.query(Text).filter(~Text.id.in_(value_used)).all()]
+        )
+        return self.session.query(Text).with_entities(Text.id, Text.text).filter_by(id=id_new).one()
+        
+
     def insert_user(self, id:int, name:str, surname:str, username:str) -> None:
         """
         Method which is dedicated to insert selected user for the db
@@ -73,7 +100,7 @@ class DataUsage:
                 user_name = username selected
         Output: we created the insertion
         """
-        if self.session.query(User).filter_by(id=id):
+        if self.session.query(User).filter_by(id=id).one():
             return
         self.session.add(
             User(

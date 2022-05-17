@@ -13,14 +13,20 @@ class EnvVariables:
     create_db = os.getenv("DB_CREATE", False)
 
 @dataclass
+class TelegramMessages:
+    start = "Select specifics what you want to make"
+    history = "All previously sent values"
+
+@dataclass
 class TelegramButtons:
-    settings = 'Settings'
+    send = 'Send Quote Now'
+    history = 'History'
 
 @dataclass
 class TelegramCommands:
+    send = 'send'
     start = 'start'
     history = 'history'
-    settings = 'settings'
 
 @dataclass
 class Folders:
