@@ -19,8 +19,8 @@ class TelegramMessages:
 
 @dataclass
 class TelegramButtons:
-    send = 'Send Quote Now'
-    history = 'History'
+    send = 'Send Quote Now 🎭'
+    history = 'History 📜'
 
 @dataclass
 class TelegramCommands:

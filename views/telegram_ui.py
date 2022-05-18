@@ -47,16 +47,44 @@ async def start_settings(message:Message):
     """
     Function to add the selected user for the 
     """
-    await message.answer("Номер:")
+    if message.chat.type == 'private':
+        value_type = 1
+        user_id = message.chat.id
+    elif message.chat.type == 'supergroup':
+        value_type = 2
+        user_id = message.chat.id
+    if message.forward_from_chat and message.forward_from_chat.type == 'channel':
+        value_type = 3
+        user_id = message.forward_from_chat.id
 
+    joke_id, joke_str = data.return_random_joke(user_id, value_type)
+    await bot.send_message(user_id, joke_str)
+    data.insert_user_joke(
+        message.chat.id, 
+        value_type, 
+        joke_id
+    )
 
-@dp.message_handler()#CheckMessageFilter())
+@dp.message_handler()
 async def callback_menu_main(message:Message):
+    if message.chat.type == 'private':
+        value_type = 1
+        user_id = message.chat.id
+    elif message.chat.type == 'supergroup':
+        value_type = 2
+        user_id = message.chat.id
+    if message.forward_from_chat and message.forward_from_chat.type == 'channel':
+        value_type = 3
+        user_id = message.forward_from_chat.id
     
-    if message.text.strip() == TelegramButtons.send:
-        await message.answer("fdfghfghfghfgh")
-        data.return_random_joke(message.chat.id, 1)
-        return
+    if message.text.strip() == TelegramButtons.send or value_type == 3:
+        joke_id, joke_str = data.return_random_joke(user_id, value_type)
+        await bot.send_message(user_id, joke_str)
+        data.insert_user_joke(
+            message.chat.id, 
+            value_type, 
+            joke_id
+        )
 
     if message.text.strip() == TelegramButtons.history:
         await message.answer('Your hos')

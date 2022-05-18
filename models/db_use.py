@@ -73,23 +73,64 @@ class DataUsage:
         Output: set with id and the string message
         """
         if id_type == 1:
-            print(1, id_sent)
-            value_used = []
+            value_used = [
+                f for f, *_ in 
+                self.session.query(Text.id).filter(
+                    association_text_user.c.id_text == Text.id
+                ).filter(
+                    association_text_user.c.id_user == id_sent
+                    ).all()
+            ]
+            print(value_used)
+            print('vcvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv')
         elif id_type == 2:
-            print(2, id_sent)
+            value_used = [
+                f for f, *_ in
+                self.session.query(Text.id).filter(
+                    association_text_group.c.id_text == Text.id
+                ).filter(
+                    association_text_group.c.id_group == id_sent
+                ).all()
+            ]
+            print(value_used)
+            print('vcvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv')
             value_used = []
         elif id_type == 3:
-            print(3, id_sent)
+            value_used = [
+                f for f, *_ in
+                self.session.query(Text.id).filter(
+                    association_text_channel.c.id_text == Text.id
+                ).filter(
+                    association_text_channel.c.id_channel == id_sent
+                ).all()
+            ]
+            print(value_used)
+            print('vcvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv')
             value_used = []
-        #TODO add here the check
-        #TODO add here insertion after
-        length = self.session.query(Text.id).count()
-        print(length)
-        id_new = random.choice(
-            [f.id for f in self.session.query(Text).filter(~Text.id.in_(value_used)).all()]
-        )
-        return self.session.query(Text).with_entities(Text.id, Text.text).filter_by(id=id_new).one()
-        
+        if len(value_used) != self.session.query(Text.id).count():
+            id_new = random.choice(
+                [f.id for f in self.session.query(Text).filter(~Text.id.in_(value_used)).all()]
+            )
+            return self.session.query(Text).with_entities(Text.id, Text.text).filter_by(id=id_new).one() 
+        else:
+            return self.session.query(Text).with_entities(Text.id, Text.text).filter_by(id=random.randint(1, len(value_used))).one()  
+
+    def insert_user_joke(self, id_sent:int, id_type:int, id_joke:int) -> None:
+        """
+        Method which is dedicated to insert the users joke to the record
+        Input:  id_sent = id for who is sent
+                id_type = id of the type of the joke
+                id_joke =
+        Output: we created the
+        """
+        if id_type == 1:
+            statement = association_text_user.insert().values(id_text=id_joke, id_user=id_sent)
+        elif id_type == 2:
+            statement = association_text_group.insert().values(id_text=id_joke, id_group=id_sent)
+        elif id_type == 3:
+            statement = association_text_channel.insert().values(id_text=id_joke, id_channel=id_sent)
+        self.session.execute(statement)
+        self.session.commit()
 
     def insert_user(self, id:int, name:str, surname:str, username:str) -> None:
         """
