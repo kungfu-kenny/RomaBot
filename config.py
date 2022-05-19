@@ -65,6 +65,7 @@ class DbCredentials:
 
 @dataclass
 class Support:
+    n = 5
     name = 'support'
     link = 'manually'
     file_json_empty = 'json_update.json'

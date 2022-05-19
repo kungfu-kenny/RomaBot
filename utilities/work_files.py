@@ -9,6 +9,24 @@ from config import (
 def make_string(value_default:str) -> str:
     return value_default if value_default else ''
 
+def make_sublists(value_list:list, n:int=Support.n) -> list:
+    """
+    Function which is dedicated to create the list of lists n size
+    Input:  value_list = list values
+            n = integer to new size
+    Output: list of lists n size
+    """
+    def chunk(value_list:list, n:int):
+        """
+        Function for chunking values of the
+        Input:  value_list = original list
+                n = length of the sublists
+        Output: len on which to chunk values
+        """
+        for i in range(0, len(value_list), n):
+            yield value_list[i:i + n]
+    return list(chunk(value_list, n))
+
 def check_presence_file(path_file:str) -> bool:
     """
     Function which is dedicated to check files

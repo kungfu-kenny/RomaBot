@@ -18,6 +18,7 @@ from models.db_create import (
     association_user_group,
     association_user_channel,
 )
+from utilities.work_files import make_sublists
 
 
 class DataUsage:
@@ -81,8 +82,6 @@ class DataUsage:
                     association_text_user.c.id_user == id_sent
                     ).all()
             ]
-            print(value_used)
-            print('vcvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv')
         elif id_type == 2:
             value_used = [
                 f for f, *_ in
@@ -92,9 +91,6 @@ class DataUsage:
                     association_text_group.c.id_group == id_sent
                 ).all()
             ]
-            print(value_used)
-            print('vcvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv')
-            value_used = []
         elif id_type == 3:
             value_used = [
                 f for f, *_ in
@@ -104,9 +100,6 @@ class DataUsage:
                     association_text_channel.c.id_channel == id_sent
                 ).all()
             ]
-            print(value_used)
-            print('vcvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv')
-            value_used = []
         if len(value_used) != self.session.query(Text.id).count():
             id_new = random.choice(
                 [f.id for f in self.session.query(Text).filter(~Text.id.in_(value_used)).all()]
@@ -132,6 +125,56 @@ class DataUsage:
         self.session.execute(statement)
         self.session.commit()
 
+    def return_user_history(self, id_sent:int, id_type:int, index:int=0) -> set:
+        """
+        Method which is dedicated to return list of the user history
+        Input:  id_sent = id of those who sent values
+                id_type = id of the selected type to search
+                index = index value for given values
+        Output: length of the values, list of the user history
+        """
+        if id_type == 1:
+            value_used = [
+                f for f, *_ in 
+                self.session.query(Text.id).filter(
+                    association_text_user.c.id_text == Text.id
+                ).filter(
+                    association_text_user.c.id_user == id_sent
+                    ).all()
+            ]
+        elif id_type == 2:
+            value_used = [
+                f for f, *_ in
+                self.session.query(Text.id).filter(
+                    association_text_group.c.id_text == Text.id
+                ).filter(
+                    association_text_group.c.id_group == id_sent
+                ).all()
+            ]
+        elif id_type == 3:
+            value_used = [
+                f for f, *_ in
+                self.session.query(Text.id).filter(
+                    association_text_channel.c.id_text == Text.id
+                ).filter(
+                    association_text_channel.c.id_channel == id_sent
+                ).all()
+            ]
+        length = len(value_used)
+        value_list = make_sublists(value_used)
+        tmp_bool = len(value_list)
+        index = index % len(value_list) if value_list else 0
+        value_list = value_list[index] if value_list else []
+        return length, value_list, tmp_bool, id_type
+
+    def return_text_joke(self, id_text:int) -> str:
+        """
+        Method which is dedicated to return text of the selected joke
+        Input:  id_text = id of the selected text
+        Output: string from the selected id
+        """
+        return self.session.query(Text.text).filter_by(id=id_text).one()[0]
+        
     def insert_user(self, id:int, name:str, surname:str, username:str) -> None:
         """
         Method which is dedicated to insert selected user for the db
