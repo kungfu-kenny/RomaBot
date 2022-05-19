@@ -2,11 +2,13 @@ import asyncio
 import schedule
 from time import sleep
 from aiogram import executor
+from parsers.parse_manually import ParseManually
 from views.telegram_ui import (
     dp, 
     bot, 
     data
 )
+from config import EnvVariables
 
 
 async def make_group_values_message(loop) -> set:
@@ -24,6 +26,9 @@ async def make_group_values_message(loop) -> set:
         )
 
 def main():
+    ParseManually().develop_parse_main(EnvVariables.noncheck)
+    df_check = ParseManually().develop_df_all()
+    data.insert_jokes_database(df_check)
     loop = asyncio.get_event_loop()
     executor.start(dp, make_group_values_message(loop), skip_updates=True)
 
