@@ -120,7 +120,7 @@ class DataUsage:
         Method which is dedicated to insert the users joke to the record
         Input:  id_sent = id for who is sent
                 id_type = id of the type of the joke
-                id_joke =
+                id_joke = id of the joke to send
         Output: we created the
         """
         if id_type == 1:
@@ -141,7 +141,7 @@ class DataUsage:
                 user_name = username selected
         Output: we created the insertion
         """
-        if self.session.query(User).filter_by(id=id).one():
+        if self.session.query(User).filter_by(id=id):
             return
         self.session.add(
             User(
@@ -149,6 +149,42 @@ class DataUsage:
                 first_name=name,
                 last_name=surname,
                 user_name=username
+            )
+        )
+        self.session.commit()
+
+    def insert_group(self, id:int, name:str) -> None:
+        """
+        Method which is dedicated to insert selected group for the db
+        Input:  id = id of the selected group
+                name = name of the selected group
+        Output: we inserted the 
+        """
+        if self.session.query(Group).filter_by(id=id):
+            return
+        self.session.add(
+            Group(
+                id=id,
+                group_name=name
+            )
+        )
+        self.session.commit()
+
+    def insert_channel(self, id:int, name:str, username:str) -> None:
+        """
+        Method which is dedicated to insert selected channel for the db
+        Input:  id = id of the selected channel
+                name = name of the selected channel
+                username = username of the selected 
+        Output: we inserted the channel for the selected database 
+        """
+        if self.session.query(Channel).filter_by(id=id):
+            return
+        self.session.add(
+            Channel(
+                id=id,
+                channel_name=name,
+                channel_username=username
             )
         )
         self.session.commit()

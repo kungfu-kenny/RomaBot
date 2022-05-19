@@ -90,6 +90,7 @@ class Channel(Base):
     __tablename__ = 'channels'
     id = Column(Integer, primary_key=True)
     channel_name = Column(String, default='')
+    channel_username = Column(String, default='')
     text_channel = relationship("Text",
         secondary=association_text_channel,
         back_populates="text_channel")

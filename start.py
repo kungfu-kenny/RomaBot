@@ -2,7 +2,6 @@ from aiogram import executor
 from parsers.parse_manually import ParseManually
 from parsers.parse_citaty import ParseCitaty
 from parsers.parse_anekdoty import ParseAnekdoty
-# from models.db_use import DataUsage
 from views.telegram_ui import dp, data
 from config import EnvVariables
 
