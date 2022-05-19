@@ -1,11 +1,5 @@
 import random
 import pandas as pd
-from pprint import pprint
-from sqlalchemy import (
-    insert,
-    delete,
-    update,
-)
 from models.db_create import (
     DbCreate, 
     User,
@@ -15,8 +9,6 @@ from models.db_create import (
     association_text_user,
     association_text_group,
     association_text_channel,
-    association_user_group,
-    association_user_channel,
 )
 from utilities.work_files import make_sublists
 
@@ -184,7 +176,7 @@ class DataUsage:
                 user_name = username selected
         Output: we created the insertion
         """
-        if self.session.query(User).filter_by(id=id):
+        if [f for f in self.session.query(User).filter_by(id=id)]:
             return
         self.session.add(
             User(
@@ -203,7 +195,7 @@ class DataUsage:
                 name = name of the selected group
         Output: we inserted the 
         """
-        if self.session.query(Group).filter_by(id=id):
+        if [f for f in self.session.query(Group).filter_by(id=id)]:
             return
         self.session.add(
             Group(
@@ -221,7 +213,7 @@ class DataUsage:
                 username = username of the selected 
         Output: we inserted the channel for the selected database 
         """
-        if self.session.query(Channel).filter_by(id=id):
+        if [f for f in self.session.query(Channel).filter_by(id=id)]:
             return
         self.session.add(
             Channel(
@@ -231,3 +223,14 @@ class DataUsage:
             )
         )
         self.session.commit()
+
+    def select_id_send(self) -> list:
+        """
+        Method which is dedicated to return id who to send
+        Input:  None
+        Output: list of the dedicated values
+        """
+        value_result = []
+        for cls, t in zip([User, Group, Channel], [1, 2, 3]):
+            value_result.extend([[f[0], t] for f in self.session.query(cls.id)])
+        return value_result
